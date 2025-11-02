@@ -1,0 +1,16 @@
+/* Template A: Clean with sidebar */
+.templateA .header { display: flex; gap: 16px; align-items: center; }
+.templateA .avatar { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; background: #f0f0f0; }
+.templateA .summary { margin-top: 8px; }
+.templateA .section { margin-top: 16px; border-top: 1px solid #eee; padding-top: 12px; }
+
+/* Template B: Two column */
+.templateB .grid { display: grid; grid-template-columns: 1fr 2fr; gap: 18px; }
+.templateB .sidebar { border-right: 1px solid #eee; padding-right: 12px; }
+.templateB .content { padding-left: 12px; }
+.templateB .avatar { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; background: #f0f0f0; }
+
+/* Template C: Minimal Single Column */
+.templateC .header { text-align: center; }
+.templateC .avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin: 0 auto; background: #f0f0f0; }
+.templateC .section { margin-top: 14px; }
