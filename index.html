@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Resume Builder — Templates + Drag & Drop</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#071028; --panel:#071428; --muted:#9fb0c6; --accent:#6EE7B7; --card:#0b1220; --paper:#ffffff;
+  --glass: rgba(255,255,255,0.03);
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:linear-gradient(180deg,#05122a 0%, #071428 100%);color:var(--paper);-webkit-font-smoothing:antialiased}
+.app{max-width:1200px;margin:28px auto;padding:18px;display:grid;grid-template-columns:360px 1fr;gap:18px;}
+.panel{background:var(--panel);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);height:calc(100vh - 56px);overflow:auto}
+.brand{display:flex;gap:12px;align-items:center;margin-bottom:8px}
+.logo{background:linear-gradient(135deg,var(--accent),#60a5fa);width:44px;height:44px;border-radius:10px;display:grid;place-items:center;font-weight:800;color:#052017}
+h1{font-size:16px;margin:0}
+.muted{color:var(--muted);font-size:13px;margin-top:6px}
+
+/* controls */
+label{display:block;color:var(--muted);font-size:13px;margin-top:12px}
+input[type="text"], input[type="email"], textarea, select {
+  width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.03);
+  background:transparent;color:var(--paper);font-size:14px;margin-top:6px;outline:none;
+}
+textarea{min-height:70px;resize:vertical}
+.controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;border:0;background:linear-gradient(90deg,#1f2937,#111827);color:var(--paper);cursor:pointer;font-weight:700}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04)}
+.small{padding:6px 8px;font-size:13px}
+
+/* template selector */
+.tpls{display:flex;gap:8px;margin-top:8px}
+.tpl{padding:8px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);cursor:pointer;border:1px solid rgba(255,255,255,0.03);font-size:13px}
+.tpl.active{outline:3px solid rgba(110,231,183,0.09);box-shadow:0 8px 28px rgba(2,6,23,0.6)}
+
+/* list & items */
+.section{margin-top:12px}
+.sectionList{margin-top:8px;display:flex;flex-direction:column;gap:8px}
+.item{background:var(--glass);padding:8px;border-radius:8px;display:flex;flex-direction:column;gap:8px;border:1px solid rgba(255,255,255,0.02)}
+.row{display:flex;gap:8px}
+.row .col{flex:1}
+.dragHandle{cursor:grab;padding:6px;border-radius:6px;background:rgba(255,255,255,0.02);align-self:flex-start;font-size:13px;color:var(--muted)}
+.removeBtn{background:none;border:none;color:#f97373;cursor:pointer;font-weight:700;padding:6px;border-radius:6px}
+
+/* skills chips */
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{background:#f1f5f9;color:#0b1220;padding:6px 8px;border-radius:999px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
+.chip .x{background:transparent;border:none;color:#b91c1c;cursor:pointer;padding:0;margin-left:6px}
+
+/* preview */
+.previewWrap{padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));height:calc(100vh - 56px);overflow:auto}
+.previewArea{background:var(--paper);color:#0b1220;border-radius:8px;padding:20px;max-width:900px;margin:auto;box-shadow:0 10px 30px rgba(2,6,23,0.06)}
+.resume{display:flex;gap:18px;font-size:14px}
+.col-left{width:28%;padding:12px}
+.col-right{flex:1;padding:12px}
+.name{font-size:26px;font-weight:800}
+.title{font-size:13px;color:#475569;margin-bottom:8px}
+.sectionTitle{font-weight:800;margin-top:12px;margin-bottom:8px}
+.skillPill{display:inline-block;padding:6px 8px;border-radius:999px;font-size:12px;margin:6px 6px 6px 0;background:#eef2ff;color:#0b1220}
+
+/* templates styles */
+.template-modern .col-left{background:linear-gradient(180deg,#051022,#07162a);color:#cfeee1;border-radius:8px}
+.template-modern .name{color:var(--accent)}
+.template-classic .previewArea{font-family:Georgia,serif}
+.template-classic .col-left{background:#f8fafc;color:#0b1220;border-radius:8px}
+.template-creative .resume{flex-direction:column}
+.template-creative .avatar{width:96px;height:96px;border-radius:12px;overflow:hidden;border:4px solid white}
+
+/* drag placeholder highlight */
+.drag-over{outline:3px dashed rgba(59,130,246,0.25);border-radius:8px}
+
+/* responsive */
+@media(max-width:900px){
+  .app{grid-template-columns:1fr;padding:12px}
+  .panel{height:auto}
+  .previewWrap{height:auto;margin-top:12px}
+  .resume{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<div class="app" role="application" aria-label="Resume builder app">
+  <aside class="panel" aria-label="Controls">
+    <div class="brand">
+      <div class="logo">RB</div>
+      <div>
+        <h1>Resume Builder</h1>
+        <div class="muted">Templates + drag & drop — single file</div>
+      </div>
+    </div>
+
+    <label>Template</label>
+    <div class="tpls" id="templateChooser">
+      <div class="tpl active" data-tpl="modern">Modern</div>
+      <div class="tpl" data-tpl="classic">Classic</div>
+      <div class="tpl" data-tpl="creative">Creative</div>
+    </div>
+
+    <label>Photo</label>
+    <input id="photoInput" type="file" accept="image/*">
+
+    <label>Full name</label>
+    <input id="fullName" type="text" placeholder="Your name" value="Jane Doe">
+
+    <label>Title</label>
+    <input id="title" type="text" placeholder="e.g. Product Designer" value="Product Designer">
+
+    <label>Email</label>
+    <input id="email" type="email" value="jane.doe@example.com">
+
+    <label>Phone</label>
+    <input id="phone" type="text" value="+1 555 123 456">
+
+    <label>Summary</label>
+    <textarea id="summary">Product designer focused on delightful UX and usable design systems.</textarea>
+
+    <!-- Experience -->
+    <div class="section" aria-label="Experience section">
+      <label>Experience</label>
+      <div id="expContainer" class="sectionList"></div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button id="addExp" class="btn small">+ Add Experience</button>
+        <button id="clearExp" class="btn small ghost">Clear</button>
+      </div>
+      <div class="muted" style="margin-top:6px">Drag the handle to reorder items.</div>
+    </div>
+
+    <!-- Education -->
+    <div class="section">
+      <label>Education</label>
+      <div id="eduContainer" class="sectionList"></div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button id="addEdu" class="btn small">+ Add Education</button>
+        <button id="clearEdu" class="btn small ghost">Clear</button>
+      </div>
+    </div>
+
+    <!-- Skills -->
+    <div class="section">
+      <label>Skills</label>
+      <div id="skillsContainer" class="chips" aria-live="polite"></div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input id="skillInput" type="text" placeholder="Add skill (press Add or Enter)">
+        <button id="addSkill" class="btn small">Add</button>
+      </div>
+      <div class="muted" style="margin-top:6px">You can drag skill chips to reorder.</div>
+    </div>
+
+    <!-- Actions -->
+    <div class="controls" style="margin-top:14px">
+      <button id="downloadPdf" class="btn">Download PDF</button>
+      <button id="exportJson" class="btn ghost">Export JSON</button>
+      <button id="importJsonBtn" class="btn ghost">Import JSON</button>
+      <input id="importJson" type="file" accept="application/json" style="display:none">
+    </div>
+
+    <div style="margin-top:10px;color:var(--muted);font-size:13px">
+      Tip: drag handles (≡) reorder items; templates update the preview.
+    </div>
+  </aside>
+
+  <main class="previewWrap" aria-live="polite">
+    <div id="previewArea" class="previewArea template-modern">
+      <!-- Resume content rendered here -->
+    </div>
+  </main>
+</div>
+
+<!-- PDF export library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
+<script>
+/* -------------------------
+   Data model & initial state
+   ------------------------- */
+const state = {
+  template: 'modern',
+  photoDataUrl: null,
+  fullName: 'Jane Doe',
+  title: 'Product Designer',
+  email: 'jane.doe@example.com',
+  phone: '+1 555 123 456',
+  summary: 'Product designer focused on delightful UX and usable design systems.',
+  experience: [
+    { company: 'Acme Co', role: 'Senior Product Designer', period: '2020 — Present', desc: 'Led product design for analytics product, improved retention by 18%' },
+    { company: 'Beta Labs', role: 'Product Designer', period: '2017 — 2020', desc: 'Designed mobile and web experiences for SaaS product' }
+  ],
+  education: [
+    { school: 'State University', degree: 'B.S. Interaction Design', period: '2012 — 2016' }
+  ],
+  skills: ['UX', 'Design Systems', 'Figma', 'Prototyping'],
+};
+
+/* -------------------------
+   DOM refs
+   ------------------------- */
+const refs = {
+  templateChooser: document.getElementById('templateChooser'),
+  photoInput: document.getElementById('photoInput'),
+  fullName: document.getElementById('fullName'),
+  title: document.getElementById('title'),
+  email: document.getElementById('email'),
+  phone: document.getElementById('phone'),
+  summary: document.getElementById('summary'),
+  expContainer: document.getElementById('expContainer'),
+  addExp: document.getElementById('addExp'),
+  clearExp: document.getElementById('clearExp'),
+  eduContainer: document.getElementById('eduContainer'),
+  addEdu: document.getElementById('addEdu'),
+  clearEdu: document.getElementById('clearEdu'),
+  skillsContainer: document.getElementById('skillsContainer'),
+  skillInput: document.getElementById('skillInput'),
+  addSkill: document.getElementById('addSkill'),
+  downloadPdf: document.getElementById('downloadPdf'),
+  previewArea: document.getElementById('previewArea'),
+  exportJson: document.getElementById('exportJson'),
+  importJsonBtn: document.getElementById('importJsonBtn'),
+  importJson: document.getElementById('importJson')
+};
+
+/* -------------------------
+   Utility helpers
+   ------------------------- */
+const uid = () => Math.random().toString(36).slice(2,9);
+function escapeHtml(s){ return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+/* -------------------------
+   Template switching
+   ------------------------- */
+refs.templateChooser.addEventListener('click', (e) => {
+  const t = e.target.closest('.tpl');
+  if(!t) return;
+  document.querySelectorAll('.tpl').forEach(n=>n.classList.remove('active'));
+  t.classList.add('active');
+  state.template = t.getAttribute('data-tpl');
+  renderPreview();
+});
+
+/* -------------------------
+   Inputs wiring
+   ------------------------- */
+[ 'fullName','title','email','phone','summary' ].forEach(id=>{
+  document.getElementById(id).addEventListener('input', (e)=>{ state[id] = e.target.value; renderPreview(); });
+});
+
+/* photo upload */
+refs.photoInput.addEventListener('change', (e)=>{
+  const f = e.target.files && e.target.files[0];
+  if(!f) { state.photoDataUrl = null; renderPreview(); return; }
+  const r = new FileReader();
+  r.onload = () => { state.photoDataUrl = r.result; renderPreview(); }
+  r.readAsDataURL(f);
+});
+
+/* -------------------------
+   Render UI lists (controls)
+   ------------------------- */
+function createExpItemDom(item, idx){
+  // container
+  const div = document.createElement('div'); div.className = 'item'; div.setAttribute('draggable','true'); div.dataset.type='exp'; div.dataset.idx=idx;
+  // drag handle + remove
+  const top = document.createElement('div'); top.className='row';
+  const handle = document.createElement('div'); handle.className='dragHandle'; handle.textContent = '≡';
+  // fields
+  const col = document.createElement('div'); col.style.flex='1';
+  const inpCompany = document.createElement('input'); inpCompany.type='text'; inpCompany.placeholder='Company'; inpCompany.value = item.company || '';
+  const inpRole = document.createElement('input'); inpRole.type='text'; inpRole.placeholder='Role'; inpRole.value = item.role || '';
+  const inpPeriod = document.createElement('input'); inpPeriod.type='text'; inpPeriod.placeholder='Period'; inpPeriod.value = item.period || '';
+  const txtDesc = document.createElement('textarea'); txtDesc.placeholder='Description'; txtDesc.value = item.desc || '';
+  const remove = document.createElement('button'); remove.className='removeBtn'; remove.textContent='Remove';
+  // events
+  inpCompany.addEventListener('input', e => { state.experience[idx].company = e.target.value; renderPreview(); });
+  inpRole.addEventListener('input', e => { state.experience[idx].role = e.target.value; renderPreview(); });
+  inpPeriod.addEventListener('input', e => { state.experience[idx].period = e.target.value; renderPreview(); });
+  txtDesc.addEventListener('input', e => { state.experience[idx].desc = e.target.value; renderPreview(); });
+  remove.addEventListener('click', ()=> { state.experience.splice(idx,1); refreshLists(); renderPreview(); });
+
+  col.appendChild(inpCompany); col.appendChild(inpRole); col.appendChild(inpPeriod); col.appendChild(txtDesc);
+  top.appendChild(handle); top.appendChild(col);
+  div.appendChild(top);
+  div.appendChild(remove);
+
+  // drag events
+  addDragHandlers(div);
+
+  return div;
+}
+
+function createEduItemDom(item, idx){
+  const div = document.createElement('div'); div.className = 'item'; div.setAttribute('draggable','true'); div.dataset.type='edu'; div.dataset.idx=idx;
+  const top = document.createElement('div'); top.className='row';
+  const handle = document.createElement('div'); handle.className='dragHandle'; handle.textContent='≡';
+  const col = document.createElement('div'); col.style.flex='1';
+  const inpSchool = document.createElement('input'); inpSchool.type='text'; inpSchool.placeholder='School'; inpSchool.value = item.school || '';
+  const inpDegree = document.createElement('input'); inpDegree.type='text'; inpDegree.placeholder='Degree'; inpDegree.value = item.degree || '';
+  const inpPeriod = document.createElement('input'); inpPeriod.type='text'; inpPeriod.placeholder='Period'; inpPeriod.value = item.period || '';
+  const remove = document.createElement('button'); remove.className='removeBtn'; remove.textContent='Remove';
+  inpSchool.addEventListener('input', e=>{ state.education[idx].school = e.target.value; renderPreview(); });
+  inpDegree.addEventListener('input', e=>{ state.education[idx].degree = e.target.value; renderPreview(); });
+  inpPeriod.addEventListener('input', e=>{ state.education[idx].period = e.target.value; renderPreview(); });
+  remove.addEventListener('click', ()=>{ state.education.splice(idx,1); refreshLists(); renderPreview(); });
+
+  col.appendChild(inpSchool); col.appendChild(inpDegree); col.appendChild(inpPeriod);
+  top.appendChild(handle); top.appendChild(col);
+  div.appendChild(top);
+  div.appendChild(remove);
+
+  addDragHandlers(div);
+
+  return div;
+}
+
+function createSkillChipDom(skill, idx){
+  const span = document.createElement('div'); span.className='chip'; span.setAttribute('draggable','true'); span.dataset.type='skill'; span.dataset.idx=idx;
+  span.textContent = skill;
+  const x = document.createElement('button'); x.className='x'; x.textContent='✕';
+  x.addEventListener('click', ()=>{ state.skills.splice(idx,1); refreshLists(); renderPreview(); });
+  span.appendChild(x);
+  addDragHandlers(span);
+  return span;
+}
+
+function refreshLists(){
+  // Experience
+  refs.expContainer.innerHTML = '';
+  state.experience.forEach((it,i)=> refs.expContainer.appendChild(createExpItemDom(it,i)));
+  // Education
+  refs.eduContainer.innerHTML = '';
+  state.education.forEach((it,i)=> refs.eduContainer.appendChild(createEduItemDom(it,i)));
+  // Skills
+  refs.skillsContainer.innerHTML = '';
+  state.skills.forEach((s,i)=> refs.skillsContainer.appendChild(createSkillChipDom(s,i)));
+}
+
+/* -------------------------
+   Drag & Drop logic (generic)
+   ------------------------- */
+let dragSrc = null;
+function addDragHandlers(node){
+  node.addEventListener('dragstart', (e)=>{
+    e.stopPropagation();
+    dragSrc = node;
+    node.style.opacity = '0.5';
+    e.dataTransfer.effectAllowed = 'move';
+    // encode type and index
+    e.dataTransfer.setData('text/plain', JSON.stringify({ type: node.dataset.type, idx: Number(node.dataset.idx) }));
+  });
+
+  node.addEventListener('dragend', (e)=>{
+    node.style.opacity = '';
+    dragSrc = null;
+    document.querySelectorAll('.drag-over').forEach(n=>n.classList.remove('drag-over'));
+  });
+
+  // when dragging over containers or siblings we allow drop
+  const containers = [refs.expContainer, refs.eduContainer, refs.skillsContainer];
+  containers.forEach(cont=>{
+    cont.addEventListener('dragover', dragOverHandler);
+    cont.addEventListener('drop', dropHandler);
+  });
+
+  // make each child element highlightable as drop target
+  [refs.expContainer, refs.eduContainer].forEach(container=>{
+    container.addEventListener('dragenter', (e)=>{
+      const target = e.target.closest('.item');
+      if(target && target !== dragSrc) target.classList.add('drag-over');
+    });
+    container.addEventListener('dragleave', (e)=>{
+      const target = e.target.closest('.item');
+      if(target) target.classList.remove('drag-over');
+    });
+  });
+
+  // skills container get per-chip dragenter/out handled by container level
+}
+
+/* drag over: allow move */
+function dragOverHandler(e){
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+/* drop handler: reorder arrays correctly */
+function dropHandler(e){
+  e.preventDefault();
+  const raw = e.dataTransfer.getData('text/plain');
+  if(!raw) return;
+  let payload;
+  try{ payload = JSON.parse(raw); } catch(err){ return; }
+
+  const dropContainer = e.currentTarget; // container element
+  const dropType = dropContainer === refs.skillsContainer ? 'skill' : (dropContainer === refs.expContainer ? 'exp' : 'edu');
+
+  // determine target index based on drop position
+  const children = Array.from(dropContainer.children);
+  // find child under cursor
+  let targetIdx = children.length; // default append at end
+  for(let i=0;i<children.length;i++){
+    const rect = children[i].getBoundingClientRect();
+    if(e.clientY < rect.top + rect.height/2){ targetIdx = i; break; }
+  }
+
+  // if same type re-order internal array
+  if(payload.type === 'exp' && dropType === 'exp'){
+    const from = payload.idx;
+    if(from === undefined) return;
+    // handle moving within same list accounting for index shift when removing earlier element
+    const item = state.experience.splice(from,1)[0];
+    // if dragging forward and removing earlier reduces target index by 1
+    if(from < targetIdx) targetIdx--;
+    state.experience.splice(targetIdx,0,item);
+    refreshLists(); renderPreview();
+    return;
+  }
+
+  if(payload.type === 'edu' && dropType === 'edu'){
+    const from = payload.idx;
+    const item = state.education.splice(from,1)[0];
+    if(from < targetIdx) targetIdx--;
+    state.education.splice(targetIdx,0,item);
+    refreshLists(); renderPreview();
+    return;
+  }
+
+  if(payload.type === 'skill' && dropType === 'skill'){
+    const from = payload.idx;
+    const item = state.skills.splice(from,1)[0];
+    if(from < targetIdx) targetIdx--;
+    state.skills.splice(targetIdx,0,item);
+    refreshLists(); renderPreview();
+    return;
+  }
+
+  // If dragging an item into a different container type, ignore (we don't support cross-type moves)
+}
+
+/* -------------------------
+   Buttons: add / remove / clear
+   ------------------------- */
+refs.addExp.addEventListener('click', ()=>{
+  state.experience.push({ company:'', role:'', period:'', desc:'' });
+  refreshLists(); renderPreview();
+});
+refs.clearExp.addEventListener('click', ()=>{
+  if(!confirm('Clear all experience items?')) return;
+  state.experience = []; refreshLists(); renderPreview();
+});
+refs.addEdu.addEventListener('click', ()=>{
+  state.education.push({ school:'', degree:'', period:'' });
+  refreshLists(); renderPreview();
+});
+refs.clearEdu.addEventListener('click', ()=>{
+  if(!confirm('Clear all education items?')) return;
+  state.education = []; refreshLists(); renderPreview();
+});
+
+/* Skills add / enter handling */
+refs.addSkill.addEventListener('click', addSkillFromInput);
+refs.skillInput.addEventListener('keydown', (e)=>{ if(e.key === 'Enter'){ e.preventDefault(); addSkillFromInput(); } });
+function addSkillFromInput(){
+  const v = refs.skillInput.value.trim();
+  if(!v) return;
+  state.skills.push(v);
+  refs.skillInput.value = '';
+  refreshLists(); renderPreview();
+}
+
+/* -------------------------
+   Export / import JSON
+   ------------------------- */
+refs.exportJson.addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = (state.fullName || 'resume') + '_data.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+});
+refs.importJsonBtn.addEventListener('click', ()=> refs.importJson.click());
+refs.importJson.addEventListener('change', (e)=>{
+  const f = e.target.files && e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=> {
+    try{
+      const data = JSON.parse(r.result);
+      // merge safely
+      Object.assign(state, {
+        template: data.template || state.template,
+        photoDataUrl: data.photoDataUrl || state.photoDataUrl,
+        fullName: data.fullName || state.fullName,
+        title: data.title || state.title,
+        email: data.email || state.email,
+        phone: data.phone || state.phone,
+        summary: data.summary || state.summary,
+        experience: Array.isArray(data.experience) ? data.experience : state.experience,
+        education: Array.isArray(data.education) ? data.education : state.education,
+        skills: Array.isArray(data.skills) ? data.skills : state.skills
+      });
+      // update inputs & UI
+      document.querySelectorAll('.tpl').forEach(n=> n.classList.toggle('active', n.dataset.tpl === state.template));
+      if(state.photoDataUrl){ /* photo stays as is */ }
+      refs.fullName.value = state.fullName;
+      refs.title.value = state.title;
+      refs.email.value = state.email;
+      refs.phone.value = state.phone;
+      refs.summary.value = state.summary;
+      refreshLists();
+      renderPreview();
+    }catch(err){
+      alert('Invalid JSON file');
+    }
+  };
+  r.readAsText(f);
+});
+
+/* -------------------------
+   Render preview (three templates)
+   ------------------------- */
+function renderExperienceHTML(list){
+  if(!Array.isArray(list) || list.length === 0) return `<div style="color:#475569">No experience</div>`;
+  return list.map(e=>`
+    <div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div style="font-weight:700">${escapeHtml(e.role)} — ${escapeHtml(e.company)}</div>
+        <div style="font-size:12px;color:#475569">${escapeHtml(e.period)}</div>
+      </div>
+      <div style="margin-top:6px;color:#334155">${escapeHtml(e.desc)}</div>
+    </div>
+  `).join('');
+}
+function renderEducationHTML(list){
+  if(!Array.isArray(list) || list.length === 0) return `<div style="color:#475569">No education</div>`;
+  return list.map(e=>`<div style="margin-bottom:10px"><div style="font-weight:700">${escapeHtml(e.degree)} — ${escapeHtml(e.school)}</div><div style="font-size:12px;color:#475569">${escapeHtml(e.period)}</div></div>`).join('');
+}
+function renderSkillsHTML(list){
+  if(!Array.isArray(list) || list.length === 0) return `<div style="color:#475569">No skills</div>`;
+  return list.map(s=>`<span class="skillPill">${escapeHtml(s)}</span>`).join('');
+}
+
+function renderPreview(){
+  // update previewArea template class
+  refs.previewArea.className = 'previewArea template-' + state.template;
+  const photoHTML = state.photoDataUrl ? `<div style="width:84px;height:84px;border-radius:10px;overflow:hidden"><img src="${state.photoDataUrl}" style="width:100%;height:100%;object-fit:cover"></div>` : '';
+  // three templates
+  let html = '';
+  if(state.template === 'modern'){
+    html = `
+      <div class="previewAreaInner template-modern">
+        <div class="resume template-modern">
+          <div class="col-left">
+            <div class="name">${escapeHtml(state.fullName)}</div>
+            <div class="title">${escapeHtml(state.title)}</div>
+            <div class="sectionTitle">Contact</div>
+            <div style="color:#475569">${escapeHtml(state.email)}</div>
+            <div style="color:#475569">${escapeHtml(state.phone)}</div>
+            <div class="sectionTitle">Summary</div>
+            <div style="color:#334155">${escapeHtml(state.summary)}</div>
+            <div class="sectionTitle">Skills</div>
+            <div>${renderSkillsHTML(state.skills)}</div>
+            <div class="sectionTitle">Education</div>
+            <div>${renderEducationHTML(state.education)}</div>
+          </div>
+          <div class="col-right">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="font-weight:800;font-size:18px">${escapeHtml(state.fullName)}</div>
+              ${photoHTML}
+            </div>
+            <div style="margin-top:12px">
+              <div class="sectionTitle">Experience</div>
+              ${renderExperienceHTML(state.experience)}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  } else if(state.template === 'classic'){
+    html = `
+      <div class="previewAreaInner template-classic">
+        <div style="background:var(--paper);padding:18px;border-radius:8px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+            <div>
+              <div style="font-weight:800;font-size:22px">${escapeHtml(state.fullName)}</div>
+              <div style="color:#475569">${escapeHtml(state.title)}</div>
+              <div style="margin-top:8px;color:#334155">${escapeHtml(state.summary)}</div>
+            </div>
+            ${photoHTML}
+          </div>
+          <div style="display:flex;gap:20px">
+            <div style="width:30%;padding-right:12px;border-right:1px solid #f1f5f9">
+              <div class="sectionTitle">Contact</div>
+              <div style="color:#475569">${escapeHtml(state.email)}</div>
+              <div style="color:#475569">${escapeHtml(state.phone)}</div>
+              <div class="sectionTitle" style="margin-top:12px">Skills</div>
+              <div>${renderSkillsHTML(state.skills)}</div>
+              <div class="sectionTitle" style="margin-top:12px">Education</div>
+              <div>${renderEducationHTML(state.education)}</div>
+            </div>
+            <div style="flex:1;padding-left:12px">
+              <div class="sectionTitle">Experience</div>
+              ${renderExperienceHTML(state.experience)}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  } else { // creative
+    html = `
+      <div class="previewAreaInner template-creative">
+        <div style="background:linear-gradient(180deg,#ffffff,#f7fbff);padding:18px;border-radius:8px">
+          <div style="display:flex;gap:16px;align-items:center">
+            ${state.photoDataUrl ? `<div class="avatar"><img src="${state.photoDataUrl}" style="width:100%;height:100%;object-fit:cover"></div>` : `<div class="avatar" style="display:grid;place-items:center;background:#e6eef6;font-weight:800;color:#052017">${escapeHtml((state.fullName||'').split(' ').map(n=>n[0]||'').slice(0,2).join(''))}</div>`}
+            <div>
+              <div style="font-weight:800;font-size:20px">${escapeHtml(state.fullName)}</div>
+              <div style="color:#334155">${escapeHtml(state.title)}</div>
+              <div style="margin-top:8px;color:#475569">${escapeHtml(state.summary)}</div>
+            </div>
+            <div style="margin-left:auto;text-align:right;color:#475569">
+              <div>${escapeHtml(state.email)}</div>
+              <div>${escapeHtml(state.phone)}</div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:18px;margin-top:16px">
+            <div style="width:34%;background:#ffffff;padding:12px;border-radius:8px">
+              <div style="font-weight:800;margin-bottom:8px">Skills</div>
+              <div>${renderSkillsHTML(state.skills)}</div>
+              <div style="font-weight:800;margin-top:14px">Education</div>
+              <div>${renderEducationHTML(state.education)}</div>
+            </div>
+
+            <div style="flex:1">
+              <div style="font-weight:800;margin-bottom:8px">Experience</div>
+              ${renderExperienceHTML(state.experience)}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  refs.previewArea.innerHTML = html;
+}
+
+/* -------------------------
+   PDF export
+   ------------------------- */
+refs.downloadPdf.addEventListener('click', async ()=>{
+  // ensure latest
+  renderPreview();
+  const content = refs.previewArea;
+  const opt = {
+    margin:       0.25,
+    filename:     (state.fullName ? state.fullName.replace(/\s+/g,'_') : 'resume') + '.pdf',
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true, logging:false },
+    jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+  };
+  refs.downloadPdf.disabled = true;
+  refs.downloadPdf.textContent = 'Generating…';
+  try{
+    await html2pdf().set(opt).from(content).save();
+  }catch(err){
+    alert('PDF generation failed: ' + (err.message || err));
+  }finally{
+    refs.downloadPdf.disabled = false;
+    refs.downloadPdf.textContent = 'Download PDF';
+  }
+});
+
+/* -------------------------
+   Initial render & helpers
+   ------------------------- */
+function init(){
+  // populate inputs
+  refs.fullName.value = state.fullName;
+  refs.title.value = state.title;
+  refs.email.value = state.email;
+  refs.phone.value = state.phone;
+  refs.summary.value = state.summary;
+  refreshLists();
+  renderPreview();
+}
+init();
+
+/* -------------------------
+   Note: keyboard accessibility improvements
+   ------------------------- */
+/* Add keyboard reordering for skills (optional): select a chip and use arrow keys to move */
+refs.skillsContainer.addEventListener('keydown', (e)=>{
+  const el = document.activeElement;
+  if(!el || !el.classList.contains('chip')) return;
+  const idx = Number(el.dataset.idx);
+  if(isNaN(idx)) return;
+  if(e.key === 'ArrowLeft' && idx>0){
+    const tmp = state.skills[idx-1]; state.skills[idx-1] = state.skills[idx]; state.skills[idx] = tmp;
+    refreshLists(); renderPreview();
+    refs.skillsContainer.children[Math.max(0, idx-1)].focus();
+  } else if(e.key === 'ArrowRight' && idx < state.skills.length-1){
+    const tmp = state.skills[idx+1]; state.skills[idx+1] = state.skills[idx]; state.skills[idx] = tmp;
+    refreshLists(); renderPreview();
+    refs.skillsContainer.children[Math.min(state.skills.length-1, idx+1)].focus();
+  }
+});
+</script>
+</body>
+</html>
