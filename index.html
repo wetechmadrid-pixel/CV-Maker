@@ -3,28 +3,25 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Generador de CV — Plantillas + Personalización</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<title>Constructor de Currículum — Personalizado</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Roboto:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#071028; --panel:#071428; --muted:#9fb0c6; --accent:#6EE7B7; --card:#0b1220; --paper:#ffffff;
-  --glass: rgba(255,255,255,0.03);
-  --font:"Inter",system-ui;
-  --font-size:14px;
-  font-family:var(--font);
-  font-size:var(--font-size);
+  --bg:#071028; --panel:#071428; --muted:#9fb0c6; --accent:#6EE7B7; --paper:#ffffff; --fontcolor:#0b1220; --fontsize:14px;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
 }
 *{box-sizing:border-box}
-html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--bg) 0%, #071428 100%);color:var(--paper);-webkit-font-smoothing:antialiased}
-.app{max-width:1200px;margin:28px auto;padding:18px;display:grid;grid-template-columns:360px 1fr;gap:18px;}
-.panel{background:var(--panel);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);height:calc(100vh - 56px);overflow:auto}
+html,body{height:100%;margin:0;background:linear-gradient(180deg,#05122a 0%, #071428 100%);color:var(--paper);-webkit-font-smoothing:antialiased}
+.app{max-width:1200px;margin:20px auto;padding:14px;display:grid;grid-template-columns:380px 1fr;gap:18px;}
+.panel{background:var(--panel);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);height:calc(100vh - 40px);overflow:auto}
 .brand{display:flex;gap:12px;align-items:center;margin-bottom:8px}
 .logo{background:linear-gradient(135deg,var(--accent),#60a5fa);width:44px;height:44px;border-radius:10px;display:grid;place-items:center;font-weight:800;color:#052017}
 h1{font-size:16px;margin:0}
 .muted{color:var(--muted);font-size:13px;margin-top:6px}
-input,textarea,select{font-family:inherit;font-size:14px}
+
+/* controles */
 label{display:block;color:var(--muted);font-size:13px;margin-top:12px}
-input[type="text"], input[type="email"], textarea, select {
+input[type="text"], input[type="email"], textarea, select, input[type="color"] {
   width:100%; padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.03);
   background:transparent;color:var(--paper);font-size:14px;margin-top:6px;outline:none;
 }
@@ -33,101 +30,101 @@ textarea{min-height:70px;resize:vertical}
 .btn{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;border:0;background:linear-gradient(90deg,#1f2937,#111827);color:var(--paper);cursor:pointer;font-weight:700}
 .btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04)}
 .small{padding:6px 8px;font-size:13px}
+
+/* plantillas */
 .tpls{display:flex;gap:8px;margin-top:8px}
 .tpl{padding:8px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);cursor:pointer;border:1px solid rgba(255,255,255,0.03);font-size:13px}
 .tpl.active{outline:3px solid rgba(110,231,183,0.09);box-shadow:0 8px 28px rgba(2,6,23,0.6)}
+
+/* listas y secciones personalizadas */
 .section{margin-top:12px}
 .sectionList{margin-top:8px;display:flex;flex-direction:column;gap:8px}
-.item{background:var(--glass);padding:8px;border-radius:8px;display:flex;flex-direction:column;gap:8px;border:1px solid rgba(255,255,255,0.02)}
+.item{background:rgba(255,255,255,0.03);padding:8px;border-radius:8px;display:flex;flex-direction:column;gap:8px;border:1px solid rgba(255,255,255,0.02)}
 .row{display:flex;gap:8px}
+.row .col{flex:1}
 .dragHandle{cursor:grab;padding:6px;border-radius:6px;background:rgba(255,255,255,0.02);align-self:flex-start;font-size:13px;color:var(--muted)}
 .removeBtn{background:none;border:none;color:#f97373;cursor:pointer;font-weight:700;padding:6px;border-radius:6px}
+
+/* chips */
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .chip{background:#f1f5f9;color:#0b1220;padding:6px 8px;border-radius:999px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
 .chip .x{background:transparent;border:none;color:#b91c1c;cursor:pointer;padding:0;margin-left:6px}
-.previewWrap{padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));height:calc(100vh - 56px);overflow:auto}
-.previewArea{background:var(--paper);color:#0b1220;border-radius:8px;padding:20px;max-width:900px;margin:auto;box-shadow:0 10px 30px rgba(2,6,23,0.06)}
-.resume{display:flex;gap:18px;font-size:14px}
+
+/* vista previa */
+.previewWrap{padding:16px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.005));height:calc(100vh - 40px);overflow:auto}
+.previewArea{background:var(--paper);color:var(--fontcolor);font-size:var(--fontsize);border-radius:8px;padding:20px;max-width:900px;margin:auto;box-shadow:0 10px 30px rgba(2,6,23,0.06)}
+.resume{display:flex;gap:18px}
 .col-left{width:28%;padding:12px}
 .col-right{flex:1;padding:12px}
 .name{font-size:26px;font-weight:800}
 .title{font-size:13px;color:#475569;margin-bottom:8px}
 .sectionTitle{font-weight:800;margin-top:12px;margin-bottom:8px}
 .skillPill{display:inline-block;padding:6px 8px;border-radius:999px;font-size:12px;margin:6px 6px 6px 0;background:#eef2ff;color:#0b1220}
+
+/* plantilla estilos */
 .template-modern .col-left{background:linear-gradient(180deg,#051022,#07162a);color:#cfeee1;border-radius:8px}
 .template-modern .name{color:var(--accent)}
 .template-classic .previewArea{font-family:Georgia,serif}
 .template-classic .col-left{background:#f8fafc;color:#0b1220;border-radius:8px}
 .template-creative .resume{flex-direction:column}
 .template-creative .avatar{width:96px;height:96px;border-radius:12px;overflow:hidden;border:4px solid white}
-.drag-over{outline:3px dashed rgba(59,130,246,0.25);border-radius:8px}
+
+/* responsive */
 @media(max-width:900px){
   .app{grid-template-columns:1fr;padding:12px}
   .panel{height:auto}
   .previewWrap{height:auto;margin-top:12px}
   .resume{flex-direction:column}
 }
+
+/* small helpers */
+.metaRow{display:flex;gap:8px;align-items:center}
+.smallInput{padding:6px 8px;border-radius:6px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--paper)}
+.sectionHeader{display:flex;gap:8px;align-items:center;justify-content:space-between}
 </style>
 </head>
 <body>
-<div class="app">
-  <aside class="panel">
+<div class="app" role="application" aria-label="Constructor de currículum">
+  <aside class="panel" aria-label="Controles">
     <div class="brand">
       <div class="logo">CV</div>
       <div>
-        <h1>Generador de CV</h1>
-        <div class="muted">Plantillas + arrastrar y soltar</div>
+        <h1>Constructor de Currículum</h1>
+        <div class="muted">Plantillas + Personalización + Secciones</div>
       </div>
     </div>
 
     <label>Plantilla</label>
     <div class="tpls" id="templateChooser">
-      <div class="tpl active" data-tpl="modern">Moderna</div>
-      <div class="tpl" data-tpl="classic">Clásica</div>
-      <div class="tpl" data-tpl="creative">Creativa</div>
+      <div class="tpl active" data-tpl="modern">Moderno</div>
+      <div class="tpl" data-tpl="classic">Clásico</div>
+      <div class="tpl" data-tpl="creative">Creativo</div>
     </div>
 
     <label>Foto</label>
     <input id="photoInput" type="file" accept="image/*">
 
     <label>Nombre completo</label>
-    <input id="fullName" type="text" placeholder="Tu nombre" value="Jane Doe">
+    <input id="fullName" type="text" value="Jane Doe">
 
     <label>Título profesional</label>
-    <input id="title" type="text" placeholder="Ej. Diseñadora de producto" value="Diseñadora de producto">
+    <input id="title" type="text" value="Diseñadora de Producto">
 
     <label>Correo electrónico</label>
-    <input id="email" type="email" value="jane.doe@ejemplo.com">
+    <input id="email" type="email" value="jane.doe@example.com">
 
     <label>Teléfono</label>
     <input id="phone" type="text" value="+34 600 123 456">
 
     <label>Resumen</label>
-    <textarea id="summary">Diseñadora de producto enfocada en experiencias de usuario y sistemas de diseño.</textarea>
-
-    <div class="section">
-      <label>Color de acento</label>
-      <input type="color" id="accentColor" value="#6EE7B7">
-      <label>Color de fondo</label>
-      <input type="color" id="bgColor" value="#071028">
-      <label>Fuente</label>
-      <select id="fontFamily">
-        <option value="Inter, system-ui">Inter</option>
-        <option value="Georgia, serif">Georgia</option>
-        <option value="'Courier New', monospace">Courier New</option>
-        <option value="'Roboto', sans-serif">Roboto</option>
-      </select>
-      <label>Tamaño de fuente</label>
-      <input type="range" id="fontSize" min="12" max="18" value="14">
-      <span id="fontSizeLabel" class="muted">14 px</span>
-    </div>
+    <textarea id="summary">Diseñadora enfocada en experiencias de usuario y sistemas de diseño eficientes.</textarea>
 
     <div class="section">
       <label>Experiencia</label>
       <div id="expContainer" class="sectionList"></div>
       <div style="display:flex;gap:8px;margin-top:8px">
-        <button id="addExp" class="btn small">+ Añadir</button>
-        <button id="clearExp" class="btn small ghost">Borrar todo</button>
+        <button id="addExp" class="btn small">+ Añadir experiencia</button>
+        <button id="clearExp" class="btn small ghost">Limpiar</button>
       </div>
     </div>
 
@@ -135,152 +132,458 @@ textarea{min-height:70px;resize:vertical}
       <label>Educación</label>
       <div id="eduContainer" class="sectionList"></div>
       <div style="display:flex;gap:8px;margin-top:8px">
-        <button id="addEdu" class="btn small">+ Añadir</button>
-        <button id="clearEdu" class="btn small ghost">Borrar todo</button>
+        <button id="addEdu" class="btn small">+ Añadir educación</button>
+        <button id="clearEdu" class="btn small ghost">Limpiar</button>
       </div>
     </div>
 
     <div class="section">
       <label>Habilidades</label>
-      <div id="skillsContainer" class="chips"></div>
+      <div id="skillsContainer" class="chips" aria-live="polite"></div>
       <div style="display:flex;gap:8px;margin-top:8px">
-        <input id="skillInput" type="text" placeholder="Añadir habilidad (Enter)">
+        <input id="skillInput" class="smallInput" type="text" placeholder="Añadir habilidad">
         <button id="addSkill" class="btn small">Añadir</button>
       </div>
     </div>
 
-    <div class="controls" style="margin-top:14px">
+    <div class="section">
+      <label>Secciones personalizadas</label>
+      <div id="customSections" class="sectionList"></div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <input id="newSectionTitle" class="smallInput" placeholder="Título (p.ej. Idiomas)">
+        <select id="newSectionType" class="smallInput" style="width:150px">
+          <option value="simple">Lista simple</option>
+          <option value="detailed">Título + descripción</option>
+        </select>
+        <button id="addCustomSection" class="btn small">+ Añadir sección</button>
+      </div>
+      <div class="muted" style="margin-top:6px">Cada sección puede contener varios ítems editables.</div>
+    </div>
+
+    <div class="section">
+      <label>Personalización</label>
+      <label>Color de acento</label>
+      <input type="color" id="accentColor" value="#6EE7B7">
+      <label>Color de fuente</label>
+      <input type="color" id="fontColor" value="#0b1220">
+      <label>Tamaño de fuente</label>
+      <select id="fontSize">
+        <option value="13px">Pequeño</option>
+        <option value="14px" selected>Mediano</option>
+        <option value="16px">Grande</option>
+      </select>
+    </div>
+
+    <div class="controls" style="margin-top:12px">
       <button id="downloadPdf" class="btn">Descargar PDF</button>
       <button id="exportJson" class="btn ghost">Exportar JSON</button>
       <button id="importJsonBtn" class="btn ghost">Importar JSON</button>
       <input id="importJson" type="file" accept="application/json" style="display:none">
     </div>
+
+    <div style="margin-top:10px;color:var(--muted);font-size:13px">
+      Tip: usa las secciones personalizadas para idiomas, certificados, referencias, etc.
+    </div>
   </aside>
 
-  <main class="previewWrap">
+  <main class="previewWrap" aria-live="polite">
     <div id="previewArea" class="previewArea template-modern"></div>
   </main>
 </div>
 
+<!-- html2pdf -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
+
 <script>
-/* === Estado inicial === */
+/* -------------------------
+   Estado inicial
+   ------------------------- */
 const state = {
   template: 'modern',
-  photoDataUrl: null,
   fullName: 'Jane Doe',
-  title: 'Diseñadora de producto',
-  email: 'jane.doe@ejemplo.com',
+  title: 'Diseñadora de Producto',
+  email: 'jane.doe@example.com',
   phone: '+34 600 123 456',
-  summary: 'Diseñadora de producto enfocada en experiencias de usuario y sistemas de diseño.',
-  experience: [
-    { company: 'Acme Co', role: 'Diseñadora Senior', period: '2020 — Presente', desc: 'Lideró el diseño de productos de análisis, mejorando la retención en un 18%.' }
-  ],
-  education: [
-    { school: 'Universidad Estatal', degree: 'Grado en Diseño de Interacción', period: '2012 — 2016' }
-  ],
-  skills: ['UX', 'Sistemas de diseño', 'Figma', 'Prototipado'],
-  accentColor: '#6EE7B7',
-  bgColor: '#071028',
-  fontFamily: 'Inter, system-ui',
-  fontSize: 14
+  summary: 'Diseñadora enfocada en experiencias de usuario y sistemas de diseño eficientes.',
+  photoData: null,
+  experience: [],
+  education: [],
+  skills: [],
+  // Secciones personalizadas: { id, title, type: 'simple'|'detailed', items: [...] }
+  customSections: [],
+  accent: '#6EE7B7',
+  fontColor: '#0b1220',
+  fontSize: '14px'
 };
 
-/* === Traducción en las plantillas === */
-function renderExperienceHTML(list){
-  if(!list.length) return `<div style="color:#475569">Sin experiencia</div>`;
-  return list.map(e=>`
-    <div style="margin-bottom:10px">
-      <div style="display:flex;justify-content:space-between">
-        <div style="font-weight:700">${e.role} — ${e.company}</div>
-        <div style="font-size:12px;color:#475569">${e.period}</div>
-      </div>
-      <div style="margin-top:6px;color:#334155">${e.desc}</div>
-    </div>`).join('');
+/* -------------------------
+   Refs DOM
+   ------------------------- */
+const refs = {
+  templateChooser: document.getElementById('templateChooser'),
+  photoInput: document.getElementById('photoInput'),
+  fullName: document.getElementById('fullName'),
+  title: document.getElementById('title'),
+  email: document.getElementById('email'),
+  phone: document.getElementById('phone'),
+  summary: document.getElementById('summary'),
+  expContainer: document.getElementById('expContainer'),
+  addExp: document.getElementById('addExp'),
+  clearExp: document.getElementById('clearExp'),
+  eduContainer: document.getElementById('eduContainer'),
+  addEdu: document.getElementById('addEdu'),
+  clearEdu: document.getElementById('clearEdu'),
+  skillsContainer: document.getElementById('skillsContainer'),
+  skillInput: document.getElementById('skillInput'),
+  addSkill: document.getElementById('addSkill'),
+  customSections: document.getElementById('customSections'),
+  newSectionTitle: document.getElementById('newSectionTitle'),
+  newSectionType: document.getElementById('newSectionType'),
+  addCustomSection: document.getElementById('addCustomSection'),
+  accentColor: document.getElementById('accentColor'),
+  fontColor: document.getElementById('fontColor'),
+  fontSize: document.getElementById('fontSize'),
+  downloadPdf: document.getElementById('downloadPdf'),
+  previewArea: document.getElementById('previewArea'),
+  exportJson: document.getElementById('exportJson'),
+  importJsonBtn: document.getElementById('importJsonBtn'),
+  importJson: document.getElementById('importJson')
+};
+
+/* -------------------------
+   Helpers
+   ------------------------- */
+const uid = () => Math.random().toString(36).slice(2,9);
+function escapeHtml(s){ return String(s||'').replace(/[&<>]/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+
+/* -------------------------
+   Render listas de control (panel)
+   ------------------------- */
+function createExpDom(item, idx){
+  const div = document.createElement('div'); div.className='item';
+  div.innerHTML = `
+    <input class="smallInput" placeholder="Empresa" value="${escapeHtml(item.empresa||'')}">
+    <input class="smallInput" placeholder="Rol" value="${escapeHtml(item.rol||'')}">
+    <input class="smallInput" placeholder="Periodo" value="${escapeHtml(item.periodo||'')}">
+    <textarea placeholder="Descripción">${escapeHtml(item.desc||'')}</textarea>
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn small remove">Eliminar</button>
+    </div>
+  `;
+  const [inpEmpresa, inpRol, inpPeriodo, txtDesc] = div.querySelectorAll('input,textarea');
+  const btnRemove = div.querySelector('.remove');
+  inpEmpresa.addEventListener('input', e=>{ state.experience[idx].empresa = e.target.value; render(); });
+  inpRol.addEventListener('input', e=>{ state.experience[idx].rol = e.target.value; render(); });
+  inpPeriodo.addEventListener('input', e=>{ state.experience[idx].periodo = e.target.value; render(); });
+  txtDesc.addEventListener('input', e=>{ state.experience[idx].desc = e.target.value; render(); });
+  btnRemove.addEventListener('click', ()=>{ state.experience.splice(idx,1); refreshControls(); render(); });
+  return div;
 }
-function renderEducationHTML(list){
-  if(!list.length) return `<div style="color:#475569">Sin educación</div>`;
-  return list.map(e=>`<div style="margin-bottom:10px"><div style="font-weight:700">${e.degree} — ${e.school}</div><div style="font-size:12px;color:#475569">${e.period}</div></div>`).join('');
+function createEduDom(item, idx){
+  const div = document.createElement('div'); div.className='item';
+  div.innerHTML = `
+    <input class="smallInput" placeholder="Centro" value="${escapeHtml(item.centro||'')}">
+    <input class="smallInput" placeholder="Título" value="${escapeHtml(item.titulo||'')}">
+    <input class="smallInput" placeholder="Periodo" value="${escapeHtml(item.periodo||'')}">
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn small remove">Eliminar</button>
+    </div>
+  `;
+  const [e1,e2,e3] = div.querySelectorAll('input');
+  const btnRemove = div.querySelector('.remove');
+  e1.addEventListener('input', ()=>{ state.education[idx].centro = e1.value; render(); });
+  e2.addEventListener('input', ()=>{ state.education[idx].titulo = e2.value; render(); });
+  e3.addEventListener('input', ()=>{ state.education[idx].periodo = e3.value; render(); });
+  btnRemove.addEventListener('click', ()=>{ state.education.splice(idx,1); refreshControls(); render(); });
+  return div;
 }
-function renderSkillsHTML(list){
-  if(!list.length) return `<div style="color:#475569">Sin habilidades</div>`;
-  return list.map(s=>`<span class="skillPill">${s}</span>`).join('');
+function refreshControls(){
+  // experiencia
+  refs.expContainer.innerHTML = '';
+  state.experience.forEach((it,i)=> refs.expContainer.appendChild(createExpDom(it,i)));
+  // educación
+  refs.eduContainer.innerHTML = '';
+  state.education.forEach((it,i)=> refs.eduContainer.appendChild(createEduDom(it,i)));
+  // skills
+  refs.skillsContainer.innerHTML = '';
+  state.skills.forEach((s,i)=>{
+    const span = document.createElement('div'); span.className='chip'; span.textContent = s;
+    const x = document.createElement('button'); x.className='x'; x.textContent='✕';
+    x.addEventListener('click', ()=>{ state.skills.splice(i,1); refreshControls(); render(); });
+    span.appendChild(x); refs.skillsContainer.appendChild(span);
+  });
+  // secciones personalizadas
+  refs.customSections.innerHTML = '';
+  state.customSections.forEach((sec,i)=> refs.customSections.appendChild(createCustomSectionDom(sec,i)));
 }
 
-/* === Renderizado del CV === */
-function renderPreview(){
-  const a = s=>s||'';
-  const photoHTML = state.photoDataUrl ? `<div style="width:84px;height:84px;border-radius:10px;overflow:hidden"><img src="${state.photoDataUrl}" style="width:100%;height:100%;object-fit:cover"></div>` : '';
-  let html='';
-  if(state.template==='modern'){
-    html=`
-    <div class="resume template-modern">
+/* -------------------------
+   Secciones personalizadas UI
+   ------------------------- */
+function createCustomSectionDom(section, sidx){
+  // section: { id, title, type, items: [] }
+  const dom = document.createElement('div'); dom.className='item';
+  dom.innerHTML = `
+    <div class="sectionHeader">
+      <div style="display:flex;gap:8px;align-items:center">
+        <input class="smallInput secTitle" placeholder="Título de sección" value="${escapeHtml(section.title||'')}">
+        <select class="smallInput secType" style="width:160px">
+          <option value="simple">Lista simple</option>
+          <option value="detailed">Título + descripción</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn small addItem">+ Ítem</button>
+        <button class="btn small ghost removeSec">Eliminar</button>
+      </div>
+    </div>
+    <div class="secItems"></div>
+  `;
+  const inpTitle = dom.querySelector('.secTitle');
+  const selType = dom.querySelector('.secType');
+  const btnAddItem = dom.querySelector('.addItem');
+  const btnRemoveSec = dom.querySelector('.removeSec');
+  const secItemsContainer = dom.querySelector('.secItems');
+
+  selType.value = section.type;
+
+  inpTitle.addEventListener('input', e=>{ section.title = e.target.value; render(); });
+  selType.addEventListener('change', e=>{ section.type = e.target.value; render(); refreshControls(); });
+
+  btnAddItem.addEventListener('click', ()=>{
+    if(section.type === 'simple'){
+      section.items.push(''); // string
+    } else {
+      section.items.push({ title:'', desc:'' }); // detailed
+    }
+    refreshControls(); render();
+  });
+
+  btnRemoveSec.addEventListener('click', ()=>{
+    if(!confirm('Eliminar sección "' + (section.title || '') + '" ?')) return;
+    state.customSections.splice(sidx,1); refreshControls(); render();
+  });
+
+  // render section items
+  function renderItems(){
+    secItemsContainer.innerHTML = '';
+    section.items.forEach((it, idx)=>{
+      const itemDom = document.createElement('div'); itemDom.style.marginTop='8px';
+      if(section.type === 'simple'){
+        itemDom.innerHTML = `
+          <div style="display:flex;gap:8px;align-items:center">
+            <input class="smallInput itemVal" placeholder="Texto" value="${escapeHtml(it||'')}">
+            <button class="btn small ghost removeItem">Eliminar</button>
+          </div>
+        `;
+        const inp = itemDom.querySelector('.itemVal');
+        const btn = itemDom.querySelector('.removeItem');
+        inp.addEventListener('input', e=>{ section.items[idx] = e.target.value; render(); });
+        btn.addEventListener('click', ()=>{ section.items.splice(idx,1); refreshControls(); render(); });
+      } else {
+        itemDom.innerHTML = `
+          <input class="smallInput itemTitle" placeholder="Título" value="${escapeHtml(it.title||'')}">
+          <textarea placeholder="Descripción">${escapeHtml(it.desc||'')}</textarea>
+          <div style="display:flex;gap:8px;justify-content:flex-end">
+            <button class="btn small ghost removeItem">Eliminar</button>
+          </div>
+        `;
+        const [t,d] = itemDom.querySelectorAll('input,textarea');
+        const btn = itemDom.querySelector('.removeItem');
+        t.addEventListener('input', e=>{ section.items[idx].title = e.target.value; render(); });
+        d.addEventListener('input', e=>{ section.items[idx].desc = e.target.value; render(); });
+        btn.addEventListener('click', ()=>{ section.items.splice(idx,1); refreshControls(); render(); });
+      }
+      secItemsContainer.appendChild(itemDom);
+    });
+  }
+  renderItems();
+  return dom;
+}
+
+/* -------------------------
+   Render preview
+   ------------------------- */
+function render(){
+  // apply customization CSS variables
+  document.documentElement.style.setProperty('--accent', state.accent);
+  document.documentElement.style.setProperty('--fontcolor', state.fontColor);
+  document.documentElement.style.setProperty('--fontsize', state.fontSize);
+
+  refs.previewArea.className = `previewArea template-${state.template}`;
+  const photoHtml = state.photoData ? `<div class="avatar" style="width:100%;height:120px;border-radius:8px;overflow:hidden;margin-bottom:10px"><img src="${state.photoData}" style="width:100%;height:100%;object-fit:cover"></div>` : '';
+  const expHtml = state.experience.map(x=>`
+    <div style="margin-bottom:8px">
+      <div style="font-weight:700">${escapeHtml(x.rol||'')}</div>
+      <div style="color:#475569">${escapeHtml(x.empresa||'')} — ${escapeHtml(x.periodo||'')}</div>
+      <div style="font-size:13px;margin-top:4px">${escapeHtml(x.desc||'')}</div>
+    </div>
+  `).join('');
+  const eduHtml = state.education.map(x=>`
+    <div style="margin-bottom:8px">
+      <div style="font-weight:700">${escapeHtml(x.titulo||'')}</div>
+      <div style="color:#475569">${escapeHtml(x.centro||'')} — ${escapeHtml(x.periodo||'')}</div>
+    </div>
+  `).join('');
+  const skillsHtml = state.skills.map(s=>`<span class="skillPill">${escapeHtml(s)}</span>`).join('');
+
+  // custom sections
+  const customHtml = state.customSections.map(sec=>{
+    if(!sec || !sec.title) return '';
+    if(sec.type === 'simple'){
+      const items = sec.items.map(it=>`<li>${escapeHtml(it)}</li>`).join('');
+      return `<div class="sectionTitle">${escapeHtml(sec.title)}</div><ul style="margin-top:6px;margin-bottom:6px">${items}</ul>`;
+    } else {
+      const items = sec.items.map(it=>`
+        <div style="margin-bottom:8px">
+          <div style="font-weight:700">${escapeHtml(it.title)}</div>
+          <div style="color:#475569">${escapeHtml(it.desc)}</div>
+        </div>
+      `).join('');
+      return `<div class="sectionTitle">${escapeHtml(sec.title)}</div>${items}`;
+    }
+  }).join('');
+
+  refs.previewArea.innerHTML = `
+    <div class="resume">
       <div class="col-left">
-        <div class="name">${a(state.fullName)}</div>
-        <div class="title">${a(state.title)}</div>
-        <div class="sectionTitle">Contacto</div>
-        <div>${a(state.email)}</div>
-        <div>${a(state.phone)}</div>
-        <div class="sectionTitle">Resumen</div>
-        <div>${a(state.summary)}</div>
+        ${photoHtml}
+        <div class="name">${escapeHtml(state.fullName)}</div>
+        <div class="title">${escapeHtml(state.title)}</div>
+        <div style="margin-top:8px;font-size:13px;color:#475569">
+          <div>${escapeHtml(state.email)}</div>
+          <div>${escapeHtml(state.phone)}</div>
+        </div>
         <div class="sectionTitle">Habilidades</div>
-        <div>${renderSkillsHTML(state.skills)}</div>
-        <div class="sectionTitle">Educación</div>
-        <div>${renderEducationHTML(state.education)}</div>
+        <div>${skillsHtml}</div>
       </div>
       <div class="col-right">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <div style="font-weight:800;font-size:18px">${a(state.fullName)}</div>
-          ${photoHTML}
-        </div>
-        <div style="margin-top:12px">
-          <div class="sectionTitle">Experiencia</div>
-          ${renderExperienceHTML(state.experience)}
-        </div>
+        <div class="sectionTitle">Resumen</div>
+        <div style="color:#334155">${escapeHtml(state.summary)}</div>
+        <div class="sectionTitle">Experiencia</div>
+        <div>${expHtml}</div>
+        <div class="sectionTitle">Educación</div>
+        <div>${eduHtml}</div>
+        ${customHtml}
       </div>
-    </div>`;
-  } else if(state.template==='classic'){
-    html=`
-    <div class="resume template-classic">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
-        <div>
-          <div style="font-weight:800;font-size:22px">${a(state.fullName)}</div>
-          <div style="color:#475569">${a(state.title)}</div>
-          <div style="margin-top:8px;color:#334155">${a(state.summary)}</div>
-        </div>
-        ${photoHTML}
-      </div>
-      <div style="display:flex;gap:20px">
-        <div style="width:30%;padding-right:12px;border-right:1px solid #f1f5f9">
-          <div class="sectionTitle">Contacto</div>
-          <div>${a(state.email)}</div><div>${a(state.phone)}</div>
-          <div class="sectionTitle">Habilidades</div>${renderSkillsHTML(state.skills)}
-          <div class="sectionTitle">Educación</div>${renderEducationHTML(state.education)}
-        </div>
-        <div style="flex:1;padding-left:12px">
-          <div class="sectionTitle">Experiencia</div>${renderExperienceHTML(state.experience)}
-        </div>
-      </div>
-    </div>`;
-  } else {
-    html=`
-    <div class="resume template-creative">
-      <div style="display:flex;gap:16px;align-items:center">
-        ${state.photoDataUrl ? `<div class="avatar"><img src="${state.photoDataUrl}" style="width:100%;height:100%;object-fit:cover"></div>` : ''}
-        <div>
-          <div style="font-weight:800;font-size:20px">${a(state.fullName)}</div>
-          <div style="color:#334155">${a(state.title)}</div>
-          <div style="margin-top:8px;color:#475569">${a(state.summary)}</div>
-        </div>
-        <div style="margin-left:auto;text-align:right">
-          <div>${a(state.email)}</div>
-          <div>${a(state.phone)}</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:18px;margin-top:16px">
-        <div style="width:34%;background:#ffffff;padding:12px;border-radius:8px">
-          <div class="sectionTitle">Habilidades</div>${renderSkillsHTML(state.skills)}
-          <div class="sectionTitle">Educación</div>${renderEducationHTML(state.education)}
-        </div>
-        <div style="flex:1">
-          <
+    </div>
+  `;
+}
+
+/* -------------------------
+   Eventos - panel principal
+   ------------------------- */
+refs.templateChooser.addEventListener('click', e=>{
+  const t = e.target.closest('.tpl'); if(!t) return;
+  document.querySelectorAll('.tpl').forEach(n=>n.classList.remove('active')); t.classList.add('active');
+  state.template = t.dataset.tpl; render();
+});
+
+['fullName','title','email','phone','summary'].forEach(id=>{
+  refs[id].addEventListener('input', e=>{ state[id] = e.target.value; render(); });
+});
+
+refs.photoInput.addEventListener('change', e=>{
+  const f = e.target.files && e.target.files[0];
+  if(!f){ state.photoData = null; render(); return; }
+  const r = new FileReader();
+  r.onload = ()=>{ state.photoData = r.result; render(); };
+  r.readAsDataURL(f);
+});
+
+/* experiencia / educación botones */
+refs.addExp.addEventListener('click', ()=>{
+  state.experience.push({ empresa:'', rol:'', periodo:'', desc:'' });
+  refreshControls(); render();
+});
+refs.clearExp.addEventListener('click', ()=>{
+  if(!confirm('¿Borrar todas las experiencias?')) return;
+  state.experience = []; refreshControls(); render();
+});
+refs.addEdu.addEventListener('click', ()=>{
+  state.education.push({ centro:'', titulo:'', periodo:'' });
+  refreshControls(); render();
+});
+refs.clearEdu.addEventListener('click', ()=>{
+  if(!confirm('¿Borrar toda la educación?')) return;
+  state.education = []; refreshControls(); render();
+});
+
+/* skills */
+refs.addSkill.addEventListener('click', ()=>{
+  const val = refs.skillInput.value.trim(); if(!val) return;
+  state.skills.push(val); refs.skillInput.value=''; refreshControls(); render();
+});
+refs.skillInput.addEventListener('keypress', e=>{ if(e.key === 'Enter'){ e.preventDefault(); refs.addSkill.click(); } });
+
+/* secciones personalizadas */
+refs.addCustomSection.addEventListener('click', ()=>{
+  const title = refs.newSectionTitle.value.trim() || 'Nueva sección';
+  const type = refs.newSectionType.value || 'simple';
+  const sec = { id: uid(), title, type, items: [] };
+  state.customSections.push(sec);
+  refs.newSectionTitle.value = '';
+  refreshControls(); render();
+});
+
+/* personalización */
+refs.accentColor.addEventListener('input', e=>{ state.accent = e.target.value; render(); });
+refs.fontColor.addEventListener('input', e=>{ state.fontColor = e.target.value; render(); });
+refs.fontSize.addEventListener('change', e=>{ state.fontSize = e.target.value; render(); });
+
+/* export / import */
+refs.exportJson.addEventListener('click', ()=>{
+  const data = JSON.stringify(state, null, 2);
+  const blob = new Blob([data], { type: 'application/json' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'curriculum.json'; a.click();
+});
+refs.importJsonBtn.addEventListener('click', ()=> refs.importJson.click());
+refs.importJson.addEventListener('change', e=>{
+  const f = e.target.files && e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=> {
+    try {
+      const data = JSON.parse(r.result);
+      // Basic merge / validation
+      ['template','fullName','title','email','phone','summary','accent','fontColor','fontSize','photoData'].forEach(k=>{
+        if(data[k] !== undefined) state[k] = data[k];
+      });
+      if(Array.isArray(data.experience)) state.experience = data.experience;
+      if(Array.isArray(data.education)) state.education = data.education;
+      if(Array.isArray(data.skills)) state.skills = data.skills;
+      if(Array.isArray(data.customSections)) state.customSections = data.customSections;
+      refreshControls(); render();
+    } catch(err){ alert('JSON inválido'); }
+  };
+  r.readAsText(f);
+});
+
+/* descargar PDF */
+refs.downloadPdf.addEventListener('click', ()=>{
+  try {
+    const opt = {
+      margin: 0.5,
+      filename: 'curriculum.pdf',
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opt).from(refs.previewArea).save();
+  } catch(err) {
+    console.error(err); alert('Error al generar PDF (ver consola).');
+  }
+});
+
+/* -------------------------
+   Inicialización
+   ------------------------- */
+(function init(){
+  // valores UI por defecto desde estado
+  refs.accentColor.value = state.accent;
+  refs.fontColor.value = state.fontColor;
+  refs.fontSize.value = state.fontSize;
+  refreshControls();
+  render();
+})();
+</script>
+</body>
+</html>
